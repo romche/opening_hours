@@ -1,5 +1,6 @@
 import datetime
 import json
+import operator
 from json import JSONDecodeError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -57,6 +58,10 @@ def rearrange_opening_hours(opening_hours_by_day=None):
     # If there is object, then we can start
     if opening_hours_by_day:
 
+        # making quick sorting of opening hours if they are out of order
+        for day, hours in opening_hours_by_day.items():
+            hours.sort(key=operator.itemgetter('value'))
+
         # Since we want to be sure that we have all days in week covered
         for day in DAYS_OF_WEEK:
 
@@ -68,7 +73,7 @@ def rearrange_opening_hours(opening_hours_by_day=None):
                 # if first entry type is equal to close
                 if hours_for_day[0].get('type') == 'close':
 
-                    # removing from list
+                    # removing from list so we can add it to day before
                     close_entry_for_move = hours_for_day.pop(0)
 
                     # we will be moving "type:close" entry to day before, so
@@ -79,11 +84,12 @@ def rearrange_opening_hours(opening_hours_by_day=None):
                     else:
                         day_before_index = DAYS_OF_WEEK.index(day) - 1
 
-                    # get hours of day before
+                    # get hours of day before so we can add type:close entry
                     hours_of_day_before = opening_hours_by_day.get(
                         DAYS_OF_WEEK[day_before_index]
                     )
-                    # adding "type_close" entry at the end
+                    # adding "type:close" entry at the end so we get
+                    # open / close pair
                     hours_of_day_before.append(close_entry_for_move)
 
         rearranged_opening_hours_by_day = opening_hours_by_day
@@ -133,16 +139,18 @@ def pretify_opening_hours(open_close_time=None):
 
     if open_close_time:
         # Here we assume that first in tuple is opening time and
-        # second is closing time, assuming is always bad
+        # second is closing time
         try:
             raw_open_time = open_close_time[0].get('value')
             raw_close_time = open_close_time[1].get('value')
 
-        # in except we will be returning default value
+        # in except we will be returning default value, since we
+        # did't got open / close pair
         except AttributeError as e:  # noqa: F841
             return formated_hours
 
-        # Checking if value is in range
+        # Checking if value is in range and is integer so
+        # we can format it later
         if check_if_value_is_int_and_in_range(raw_open_time) \
                 and check_if_value_is_int_and_in_range(raw_close_time):
 
@@ -215,7 +223,7 @@ def transform_user_json_to_human_readable_format(restaurant_hours_json=None):
                 else:
                     hours_in_specific_day = ['Closed']
 
-                # joining hours if sever per day
+                # joining hours since there can be more that one hours
                 human_readable_format[day] = ', '.join(hours_in_specific_day)
 
     return human_readable_format
@@ -230,9 +238,11 @@ def opening_hours(request):
     POST: Will return opening hours in human readable format
 
     """
+    # if post we start transforming
     if request.method == 'POST':
         formated_data = transform_user_json_to_human_readable_format(
             json.dumps(request.data)
         )
-        return Response({"message": "Succes", "data": formated_data})
+        return Response({"message": "Success", "data": formated_data})
+    # otherwise we provide DUMMY for helping testing api
     return Response(DUMMY)

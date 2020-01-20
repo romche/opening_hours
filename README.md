@@ -35,3 +35,4 @@ I guess format is fine, I am just wondering (hypothetical thought) how input
 json would look like if restaurant let say open 24 hours on Saturday. Plus if
 day missing, does it mean that restaurant close (same as empty list) or open 24
 hours or maybe user just forgot to submit it.
+
