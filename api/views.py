@@ -109,7 +109,7 @@ def check_if_value_is_int_and_in_range(value=None):
         try:
             if 0 <= int(value) < 86400:
                 value_is_ok = True
-        except (TypeError, ValueError) as e:  # flake8: noqa
+        except (TypeError, ValueError) as e:  # noqa: F841
             value_is_ok = False
 
     return value_is_ok
@@ -139,7 +139,7 @@ def pretify_opening_hours(open_close_time=None):
             raw_close_time = open_close_time[1].get('value')
 
         # in except we will be returning default value
-        except AttributeError as e:  # flake8: noqa
+        except AttributeError as e:  # noqa: F841
             return formated_hours
 
         # Checking if value is in range
@@ -159,7 +159,7 @@ def pretify_opening_hours(open_close_time=None):
 
             # Adding human friendly time to string
             formated_hours = \
-                f'{open_time.strftime("%-I %p")} - {close_time.strftime("%-I %p")}'  # flake8: noqa
+                f'{open_time.strftime("%-I %p")} - {close_time.strftime("%-I %p")}'  # noqa: E501
 
         # If checking fails, we just pass since we have N/A already
         else:
@@ -189,7 +189,7 @@ def transform_user_json_to_human_readable_format(restaurant_hours_json=None):
         # if doesn't work then skipping rest
         try:
             users_restaurant_hours = json.loads(restaurant_hours_json)
-        except JSONDecodeError as e:  # flake8: noqa
+        except JSONDecodeError as e:  # noqa: F841
             users_restaurant_hours = None
 
         # if we have data in dict format
