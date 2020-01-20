@@ -1,7 +1,6 @@
 import datetime
 import json
 from json import JSONDecodeError
-from rest_framework import views
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -68,7 +67,9 @@ def rearrange_opening_hours(opening_hours_by_day=None):
 
                 # if first entry type is equal to close
                 if hours_for_day[0].get('type') == 'close':
-                    close_entry_for_move = hours_for_day.pop(0)  # removing from list
+
+                    # removing from list
+                    close_entry_for_move = hours_for_day.pop(0)
 
                     # we will be moving "type:close" entry to day before, so
                     # we need to know which day is before. Except for monday
@@ -108,7 +109,7 @@ def check_if_value_is_int_and_in_range(value=None):
         try:
             if 0 <= int(value) < 86400:
                 value_is_ok = True
-        except (TypeError, ValueError) as e:
+        except (TypeError, ValueError) as e:  # flake8: noqa
             value_is_ok = False
 
     return value_is_ok
@@ -118,10 +119,10 @@ def pretify_opening_hours(open_close_time=None):
     """
     Function will format open/close hours to AM/PM, will take
     open / close tuple as parameters
-    
+
     Args:
         open_close_time (tuple): open/close in seconds
-    
+
     Returns:
         formated_hours (str): will return in desire format
                               e.g. '10:00 AM - 6:00 PM'
@@ -136,7 +137,9 @@ def pretify_opening_hours(open_close_time=None):
         try:
             raw_open_time = open_close_time[0].get('value')
             raw_close_time = open_close_time[1].get('value')
-        except AttributeError as e:
+
+        # in except we will be returning default value
+        except AttributeError as e:  # flake8: noqa
             return formated_hours
 
         # Checking if value is in range
@@ -145,14 +148,18 @@ def pretify_opening_hours(open_close_time=None):
 
             # Adding timedelta to datetime object for opening time
             open_time = \
-                datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=raw_open_time)
+                datetime.datetime(1970, 1, 1) + datetime.timedelta(
+                    seconds=raw_open_time
+                )
             # Doing same with closing time
             close_time = \
-                datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=raw_close_time)
+                datetime.datetime(1970, 1, 1) + datetime.timedelta(
+                    seconds=raw_close_time
+                )
 
             # Adding human friendly time to string
             formated_hours = \
-                f'{open_time.strftime("%-I %p")} - {close_time.strftime("%-I %p")}'
+                f'{open_time.strftime("%-I %p")} - {close_time.strftime("%-I %p")}'  # flake8: noqa
 
         # If checking fails, we just pass since we have N/A already
         else:
@@ -178,10 +185,11 @@ def transform_user_json_to_human_readable_format(restaurant_hours_json=None):
     # if we have user restaurant_hours_json object
     if restaurant_hours_json:
 
-        # Try to convert it to dict, if doesn't work then skip rest
+        # Try to convert user json to dict,
+        # if doesn't work then skipping rest
         try:
             users_restaurant_hours = json.loads(restaurant_hours_json)
-        except JSONDecodeError as e:
+        except JSONDecodeError as e:  # flake8: noqa
             users_restaurant_hours = None
 
         # if we have data in dict format

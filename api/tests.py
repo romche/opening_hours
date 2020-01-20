@@ -133,7 +133,9 @@ class TestViews(SimpleTestCase):
 
     def test_transform_user_json_to_human_readable_format_arg(self):
         wanted_day = 'monday'
-        response = transform_user_json_to_human_readable_format(json.dumps(self.original_json))
+        response = transform_user_json_to_human_readable_format(
+            json.dumps(self.original_json)
+        )
         response_dict = response
         monday = response_dict.get(wanted_day)
         expected_monday = 'Closed'
