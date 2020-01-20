@@ -19,5 +19,5 @@ from api.views import opening_hours
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('apis/v1/hours/', opening_hours, name="opening_hours"),
+    path('api/v1/hours/', opening_hours, name="opening_hours"),
 ]
