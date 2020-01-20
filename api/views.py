@@ -47,9 +47,9 @@ def rearrange_opening_hours(opening_hours_by_day=None):
         opening_hours_by_day (dict): user input of restaurant opening hours
 
     Returns:
-        rearranged_json_obj (dict): New json obj with open/close
-                                    in same day even if restaurant
-                                    closes on next day
+        rearranged_opening_hours_by_day (dict): New json obj with open/close
+                                                in same day even if restaurant
+                                                closes on next day
     """
     # If there is no json object, then returning None
     rearranged_opening_hours_by_day = None
@@ -100,7 +100,7 @@ def check_if_value_is_int_and_in_range(value=None):
         value (obj): value that we want to check
 
     Returns:
-        True / False (bool): if int and in range then True
+        value_is_ok (bool): if int and in range then True
                              else False
 
     """
